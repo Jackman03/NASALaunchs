@@ -34,23 +34,36 @@ async def launches(ctx):
     FormatedTime = now.strftime('%m/%d/%y %H:%M:%S')
     await ctx.send(f'Launches as of {FormatedTime}')
     CurrentLaunchData = GetLaunches()
-
+    #e=launches are returned in order so we dont have to sort them.
     embedMsg = discord.Embed(title='Current Launches',
                            description='The current launches, there dates and locations',
                            color=discord.Color.blue())
 
-    #{launch['vehicle_config_image']}\n
     for launch in CurrentLaunchData:
         LaunchValue = f'{launch['vehicle']}\n location: {launch['location']}, Pad: {launch['pad']}\n status: {launch['status']}\n\n'
         embedMsg.add_field(name=launch['name'], value=LaunchValue, inline=False)
-    #embedMsg.add_field(name="Mission", value="Artemis II", inline=False)
     await ctx.send(embed=embedMsg)
 
 #command to find the next launch. This should normally be the 1st one in the json file.
 @bot.command()
 async def nextlaunch(ctx):
     print(f'running command to find the next launch.')
-    #NextLaunchData = GetLaunches()[1][1]
+    #returns the first launch in the json.
+    NextLaunchData = GetLaunches()[0]
+    URL = NextLaunchData['vehicle_config_image']
+    LauchTime = datetime.strptime(NextLaunchData['net'],'%Y-%m-%dT%H:%M:%SZ')
+
+    embedMsg = discord.Embed(title='Next Launch',
+                             description='This is the next launch',
+                             color=discord.Color.gold(),
+                             timestamp=LauchTime)
+    
+    embedMsg.set_image(url=URL)
+    LaunchValue = f'{NextLaunchData['vehicle']}\n location: {NextLaunchData['location']}, Pad: {NextLaunchData['pad']}\n status: {NextLaunchData['status']}\n\n'
+    embedMsg.add_field(name=NextLaunchData['name'], value=LaunchValue, inline=False)
+    await ctx.send(embed=embedMsg)
+
+    
     
 
 

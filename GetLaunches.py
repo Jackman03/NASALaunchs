@@ -27,6 +27,5 @@ def GetLaunches() -> list:
     #debug network info here
     launchdata = response.json()
     return launchdata
-
-data = GetLaunches()
-print(json.dumps(data,indent=4))
+NextLaunchData = GetLaunches()[0]
+print(NextLaunchData)
